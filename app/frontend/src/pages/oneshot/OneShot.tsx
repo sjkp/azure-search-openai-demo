@@ -25,6 +25,7 @@ export function Component(): JSX.Element {
     const [excludeCategory, setExcludeCategory] = useState<string>("");
     const [useOidSecurityFilter, setUseOidSecurityFilter] = useState<boolean>(false);
     const [useGroupsSecurityFilter, setUseGroupsSecurityFilter] = useState<boolean>(false);
+    const [useProduct, setProduct] = useState<string>("");
 
     const lastQuestionRef = useRef<string>("");
 
@@ -66,7 +67,8 @@ export function Component(): JSX.Element {
                         semantic_ranker: useSemanticRanker,
                         semantic_captions: useSemanticCaptions,
                         use_oid_security_filter: useOidSecurityFilter,
-                        use_groups_security_filter: useGroupsSecurityFilter
+                        use_groups_security_filter: useGroupsSecurityFilter,
+                        product: "test"
                     }
                 },
                 // ChatAppProtocol: Client must pass on any session state received from the server
@@ -83,6 +85,10 @@ export function Component(): JSX.Element {
 
     const onPromptTemplateChange = (_ev?: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
         setPromptTemplate(newValue || "");
+    };
+
+    const onPromptProductChange = (_ev?: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
+        setProduct(newValue || "");
     };
 
     const onPromptTemplatePrefixChange = (_ev?: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
@@ -202,6 +208,14 @@ export function Component(): JSX.Element {
                     multiline
                     autoAdjustHeight
                     onChange={onPromptTemplateChange}
+                />
+
+                <TextField
+                    className={styles.oneshotSettingsSeparator}
+                    defaultValue={""}
+                    label="Set product"
+                    autoAdjustHeight
+                    onChange={onPromptProductChange}
                 />
 
                 <SpinButton

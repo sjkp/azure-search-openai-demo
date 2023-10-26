@@ -195,6 +195,7 @@ If you cannot generate a search query, return just the number 0.
 
         # Allow client to replace the entire prompt, or to inject into the exiting prompt using >>>
         prompt_override = overrides.get("prompt_template")
+        product_override = overrides.get("product")
         if prompt_override is None:
             system_message = self.system_message_chat_conversation.format(
                 injected_prompt="", follow_up_questions_prompt=follow_up_questions_prompt
@@ -205,6 +206,10 @@ If you cannot generate a search query, return just the number 0.
             )
         else:
             system_message = prompt_override.format(follow_up_questions_prompt=follow_up_questions_prompt)
+
+        if product_override is not None:        
+            system_message.join(" the product should be: " + product_override )
+        
 
         response_token_limit = 1024
         messages_token_limit = self.chatgpt_token_limit - response_token_limit

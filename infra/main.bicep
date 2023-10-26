@@ -162,7 +162,7 @@ module backend 'core/host/appservice.bicep' = {
       AZURE_OPENAI_EMB_MODEL_NAME: embeddingModelName
       AZURE_OPENAI_CHATGPT_MODEL: chatGptModelName
       // Specific to Azure OpenAI
-      AZURE_OPENAI_SERVICE: openAiHost == 'azure' ? openAi.outputs.name : ''
+      AZURE_OPENAI_SERVICE: 'dgopenai-us' //openAiHost == 'azure' ? openAi.outputs.name : ''
       AZURE_OPENAI_CHATGPT_DEPLOYMENT: chatGptDeploymentName
       AZURE_OPENAI_EMB_DEPLOYMENT: embeddingDeploymentName
       // Used only with non-Azure OpenAI deployments
@@ -180,41 +180,41 @@ module backend 'core/host/appservice.bicep' = {
   }
 }
 
-module openAi 'core/ai/cognitiveservices.bicep' = if (openAiHost == 'azure') {
-  name: 'openai'
-  scope: openAiResourceGroup
-  params: {
-    name: !empty(openAiServiceName) ? openAiServiceName : '${abbrs.cognitiveServicesAccounts}${resourceToken}'
-    location: openAiResourceGroupLocation
-    tags: tags
-    sku: {
-      name: openAiSkuName
-    }
-    deployments: [
-      {
-        name: chatGptDeploymentName
-        model: {
-          format: 'OpenAI'
-          name: chatGptModelName
-          version: chatGptModelVersion
-        }
-        sku: {
-          name: 'Standard'
-          capacity: chatGptDeploymentCapacity
-        }
-      }
-      {
-        name: embeddingDeploymentName
-        model: {
-          format: 'OpenAI'
-          name: embeddingModelName
-          version: '2'
-        }
-        capacity: embeddingDeploymentCapacity
-      }
-    ]
-  }
-}
+// module openAi 'core/ai/cognitiveservices.bicep' = if (openAiHost == 'azure') {
+//   name: 'openai'
+//   scope: openAiResourceGroup
+//   params: {
+//     name: !empty(openAiServiceName) ? openAiServiceName : '${abbrs.cognitiveServicesAccounts}${resourceToken}'
+//     location: openAiResourceGroupLocation
+//     tags: tags
+//     sku: {
+//       name: openAiSkuName
+//     }
+//     deployments: [
+//       {
+//         name: chatGptDeploymentName
+//         model: {
+//           format: 'OpenAI'
+//           name: chatGptModelName
+//           version: chatGptModelVersion
+//         }
+//         sku: {
+//           name: 'Standard'
+//           capacity: chatGptDeploymentCapacity
+//         }
+//       }
+//       {
+//         name: embeddingDeploymentName
+//         model: {
+//           format: 'OpenAI'
+//           name: embeddingModelName
+//           version: '2'
+//         }
+//         capacity: embeddingDeploymentCapacity
+//       }
+//     ]
+//   }
+// }
 
 module formRecognizer 'core/ai/cognitiveservices.bicep' = {
   name: 'formrecognizer'
@@ -384,7 +384,7 @@ output OPENAI_HOST string = openAiHost
 output AZURE_OPENAI_EMB_MODEL_NAME string = embeddingModelName
 output AZURE_OPENAI_CHATGPT_MODEL string = chatGptModelName
 // Specific to Azure OpenAI
-output AZURE_OPENAI_SERVICE string = (openAiHost == 'azure') ? openAi.outputs.name : ''
+output AZURE_OPENAI_SERVICE string = 'dgopenai-us'
 output AZURE_OPENAI_RESOURCE_GROUP string = (openAiHost == 'azure') ? openAiResourceGroup.name : ''
 output AZURE_OPENAI_CHATGPT_DEPLOYMENT string = (openAiHost == 'azure') ? chatGptDeploymentName : ''
 output AZURE_OPENAI_EMB_DEPLOYMENT string = (openAiHost == 'azure') ? embeddingDeploymentName : ''

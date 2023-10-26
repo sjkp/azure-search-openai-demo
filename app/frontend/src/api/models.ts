@@ -17,6 +17,7 @@ export type ChatAppRequestOverrides = {
     suggest_followup_questions?: boolean;
     use_oid_security_filter?: boolean;
     use_groups_security_filter?: boolean;
+    product?: string;
 };
 
 export type ResponseMessage = {

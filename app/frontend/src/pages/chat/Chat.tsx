@@ -20,6 +20,7 @@ import { TokenClaimsDisplay } from "../../components/TokenClaimsDisplay";
 const Chat = () => {
     const [isConfigPanelOpen, setIsConfigPanelOpen] = useState(false);
     const [promptTemplate, setPromptTemplate] = useState<string>("");
+    const [product, setProduct] = useState<string>("");
     const [retrieveCount, setRetrieveCount] = useState<number>(3);
     const [retrievalMode, setRetrievalMode] = useState<RetrievalMode>(RetrievalMode.Hybrid);
     const [useSemanticRanker, setUseSemanticRanker] = useState<boolean>(true);
@@ -116,7 +117,8 @@ const Chat = () => {
                         semantic_captions: useSemanticCaptions,
                         suggest_followup_questions: useSuggestFollowupQuestions,
                         use_oid_security_filter: useOidSecurityFilter,
-                        use_groups_security_filter: useGroupsSecurityFilter
+                        use_groups_security_filter: useGroupsSecurityFilter,
+                        product: product
                     }
                 },
                 // ChatAppProtocol: Client must pass on any session state received from the server
@@ -160,6 +162,10 @@ const Chat = () => {
 
     const onPromptTemplateChange = (_ev?: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
         setPromptTemplate(newValue || "");
+    };
+
+    const onPromptProductChange = (_ev?: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
+        setProduct(newValue || "");
     };
 
     const onRetrieveCountChange = (_ev?: React.SyntheticEvent<HTMLElement, Event>, newValue?: string) => {
@@ -335,6 +341,14 @@ const Chat = () => {
                         multiline
                         autoAdjustHeight
                         onChange={onPromptTemplateChange}
+                    />
+
+                    <TextField
+                        className={styles.oneshotSettingsSeparator}
+                        defaultValue={""}
+                        label="Set product"
+                        autoAdjustHeight
+                        onChange={onPromptProductChange}
                     />
 
                     <SpinButton

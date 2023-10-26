@@ -122,7 +122,7 @@ info4.pdf: In-network institutions include Overlake, Swedish and others in the r
         content = "\n".join(results)
 
         message_builder = MessageBuilder(
-            overrides.get("prompt_template") or self.system_chat_template, self.chatgpt_model
+            (overrides.get("prompt_template") or self.system_chat_template).join(" should only contain product: " + overrides.get("product")), self.chatgpt_model
         )
 
         # add user question

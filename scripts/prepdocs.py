@@ -44,7 +44,7 @@ from tenacity import (
 )
 
 args = argparse.Namespace(
-    verbose=False,
+    verbose=True,
     openaihost="azure",
     datalakestorageaccount=None,
     datalakefilesystem=None,
@@ -68,7 +68,7 @@ CACHE_KEY_CREATED_TIME = "created_time"
 CACHE_KEY_TOKEN_TYPE = "token_type"
 
 # Embedding batch support section
-SUPPORTED_BATCH_AOAI_MODEL = {"text-embedding-ada-002": {"token_limit": 8100, "max_batch_size": 16}}
+SUPPORTED_BATCH_AOAI_MODEL = {"text-embedding-ada-002": {"token_limit": 8100, "max_batch_size": 1}}
 
 
 def calculate_tokens_emb_aoai(input: str):
@@ -538,14 +538,28 @@ def read_files(
 
                 if not args.skipblobs:
                     upload_blobs(filename)
-                page_map = get_document_text(filename)
-                sections = create_sections(
-                    os.path.basename(filename),
-                    page_map,
-                    use_vectors and not vectors_batch_support,
-                    embedding_deployment,
-                    embedding_model,
-                )
+
+                if filename.endswith(".pdf"):
+                    page_map = get_document_text(filename)
+                    sections = create_sections(
+                        os.path.basename(filename),
+                        page_map,
+                        use_vectors and not vectors_batch_support,
+                        embedding_deployment,
+                        embedding_model,
+                    )
+                
+                if filename.endswith(".txt"):
+                    with open(filename, 'r') as file:
+                        file_id = filename_to_id(filename)
+                        sections = [{
+                            "id": f"{file_id}",
+                            "content": file.read(),
+                            "category": args.category,
+                            "sourcepage": filename,
+                            "sourcefile": filename,
+                        }]
+
                 if use_vectors and vectors_batch_support:
                     sections = update_embeddings_in_batch(sections)
                 index_sections(os.path.basename(filename), sections)
